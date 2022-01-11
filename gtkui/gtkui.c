@@ -648,7 +648,6 @@ void load_ui()
 
       // set model and parent
       
-      /*
       gtk_window_set_transient_for (GTK_WINDOW(win_card), GTK_WINDOW(win_main));
       gtk_window_set_transient_for (GTK_WINDOW(win_battle), GTK_WINDOW(win_main));
       gtk_window_set_transient_for (GTK_WINDOW(win_role), GTK_WINDOW(win_main));
@@ -658,7 +657,6 @@ void load_ui()
       gtk_window_set_transient_for (GTK_WINDOW(win_train), GTK_WINDOW(win_main));
       gtk_window_set_transient_for (GTK_WINDOW(win_study), GTK_WINDOW(win_main));
       gtk_window_set_transient_for (GTK_WINDOW(win_exchange), GTK_WINDOW(win_main));
-      */
 
       gtk_window_set_modal (GTK_WINDOW(win_card), TRUE);
       gtk_window_set_modal (GTK_WINDOW(win_battle), TRUE);
@@ -976,7 +974,7 @@ void labels_clear (GtkWidget ** labels, int n)
       }
 }
 
-long msg_box (char * msg, long mode)
+int msg_box (char * msg, int mode)
 {
       if (st == GAME_OVER) return -1;
       if (mode == 1) {
@@ -1028,7 +1026,7 @@ GtkWidget * new_button (int x, int y)
       return res;
 }
 
-void init_map  (long ngrid_, long nrole_, long npeople_, long ncity_, long ninst_, long ntrain_, long ntech_, long ncard_, long nx_, long ny_)
+void init_map  (int ngrid_, int nrole_, int npeople_, int ncity_, int ninst_, int ntrain_, int ntech_, int ncard_, int nx_, int ny_)
 {
       int i, j;
 
@@ -1172,25 +1170,25 @@ void free_ui ()
       free (train_name);
 }
 
-void init_tech (long tech, char *tname, long scond)
+void init_tech (int tech, char *tname, int scond)
 {
       strcpy (tech_name[tech], tname);
       tech_scond[tech] = scond;
 }
 
-void init_card (long card, char * dname, long odir, long otype)
+void init_card (int card, char * dname, int odir, int otype)
 {
       strcpy (card_name[card], dname);
       card_odir[card] = odir;
       card_otype[card] = otype;
 }
 
-void init_role (long role, char * rname)
+void init_role (int role, char * rname)
 {
       strcpy (role_name[role], rname);
 }
 
-void set_board (long loc, long type, long ind, long x, long y)
+void set_board (int loc, int type, int ind, int x, int y)
 {
       int i;
 
@@ -1280,22 +1278,22 @@ void set_board (long loc, long type, long ind, long x, long y)
       }
 }
 
-void set_city    (long id, char * name)
+void set_city    (int id, char * name)
 {
       strcpy (city_name[id], name);
 }
 
-void set_inst    (long id, char * name)
+void set_inst    (int id, char * name)
 {
       strcpy (inst_name[id], name);
 }
 
-void set_train    (long id, char * name)
+void set_train    (int id, char * name)
 {
       strcpy (train_name[id], name);
 }
 
-void set_barrier (long loc, long is_unset)
+void set_barrier (int loc, int is_unset)
 {
       if (is_unset)
             is_barrier[loc] = 0;
@@ -1303,7 +1301,7 @@ void set_barrier (long loc, long is_unset)
             is_barrier[loc] = 1;
 }
 
-void set_robber  (long loc, long is_unset)
+void set_robber  (int loc, int is_unset)
 {
       if (is_unset)
             is_robber[loc] = 0;
@@ -1311,7 +1309,7 @@ void set_robber  (long loc, long is_unset)
             is_robber[loc] = 1;
 }
 
-void set_role    (long loc, long rind, long is_unset)
+void set_role    (int loc, int rind, int is_unset)
 {
       if (is_unset)
             is_role[loc][rind] = 0;
@@ -1319,7 +1317,7 @@ void set_role    (long loc, long rind, long is_unset)
             is_role[loc][rind] = 1;
 }
 
-void update_role_point (long loc)
+void update_role_point (int loc)
 {
       int i;
       for (i = 0; i < nrole; ++ i)
@@ -1364,7 +1362,7 @@ void finish_draw_map ()
       gtk_widget_show_all (win_main);
 }
 
-long get_action (long rind)
+int get_action (int rind)
 {
       if (!is_align || st == GAME_OVER) return -1;
 
@@ -1383,7 +1381,7 @@ long get_action (long rind)
       return action;
 }
 
-long get_check_type () 
+int get_check_type () 
 {
       return check_type;
 }
@@ -1395,7 +1393,7 @@ void begin_cards_list ()
       cards_list_num = 0;
 }
 
-void add_cards_list (long cind, long num)
+void add_cards_list (int cind, int num)
 {
       GtkListStore * gls = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tv_card)));
       GtkTreeIter iter;
@@ -1453,7 +1451,7 @@ void end_cards_list ()
       select_setup (tv_card, 0);
 }
 
-long get_card_action () 
+int get_card_action () 
 {
       if (st == GAME_OVER) return -1;
       card_action = -1;
@@ -1477,7 +1475,7 @@ void begin_role_list ()
       role_list_num = 0;
 }
 
-void add_role_list (char * name, long loc, float money, long dir, long mst, long mtime, long cst, long ast, long atime)
+void add_role_list (char * name, int loc, float money, int dir, int mst, int mtime, int cst, int ast, int atime)
 {
       GtkListStore * gls = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tv_role)));
       GtkTreeIter iter;
@@ -1533,7 +1531,7 @@ void end_role_list ()
       select_setup (tv_role, 0);
 }
 
-long get_role_select ()
+int get_role_select ()
 {
       if (st == GAME_OVER) return -1;
       check_role_select = -1;
@@ -1550,7 +1548,7 @@ void begin_role_tech_list ()
       labels_clear (label_role_tech, 12);
 }
 
-void add_role_tech_list (long hind)
+void add_role_tech_list (int hind)
 {
       gtk_widget_set_sensitive (label_role_tech[hind], 1);
 }
@@ -1566,7 +1564,7 @@ void begin_role_mos_list ()
       role_mos_list_num = 0;
 }
 
-void add_role_mos_list (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void add_role_mos_list (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_add_people (role_mos_list_num, tv_role_mos, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
       ++ role_mos_list_num;
@@ -1584,7 +1582,7 @@ void begin_role_mcs_list ()
       role_mcs_list_num = 0;
 }
 
-void add_role_mcs_list (char * name, long scope, float hpmax, float hp, char * role, long nmos, char * mayor, char * treasurer, float fengshui)
+void add_role_mcs_list (char * name, int scope, float hpmax, float hp, char * role, int nmos, char * mayor, char * treasurer, float fengshui)
 {
       tv_add_city (role_mcs_list_num, tv_role_mcs, name, scope, hpmax, hp, role, nmos, mayor, treasurer, fengshui);
       ++ role_mcs_list_num;
@@ -1602,7 +1600,7 @@ void begin_role_sos_list ()
       role_sos_list_num = 0;
 }
 
-void add_role_sos_list (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void add_role_sos_list (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_add_people (role_sos_list_num, tv_role_sos, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
       ++ role_sos_list_num;
@@ -1620,7 +1618,7 @@ void begin_role_tos_list ()
       role_tos_list_num = 0;
 }
 
-void add_role_tos_list (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void add_role_tos_list (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_add_people (role_tos_list_num, tv_role_tos, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
       ++ role_tos_list_num;
@@ -1638,7 +1636,7 @@ void begin_role_cards_list ()
       role_cards_list_num  = 0;
 }
 
-void add_role_cards_list (long dind, long num)
+void add_role_cards_list (int dind, int num)
 {
       GtkListStore * gls = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tv_role_cards)));
       GtkTreeIter iter;
@@ -1658,7 +1656,7 @@ void end_role_cards_list ()
       select_setup (tv_role_cards, 0);
 }
 
-long get_role_mcs_select ()
+int get_role_mcs_select ()
 {
       return check_role_mcs_select;
 }
@@ -1677,13 +1675,13 @@ void begin_people_list(char * title)
       people_list_num  = 0;
 }
 
-void add_people_list(char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void add_people_list(char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_add_people (people_list_num, tv_people, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, 0);
       ++ people_list_num;
 }
 
-void end_people_list(long topof)
+void end_people_list(int topof)
 {
       switch (topof)
       {
@@ -1708,7 +1706,7 @@ void get_people_exit ()
       gtk_main();
 }
 
-long get_people_one ()
+int get_people_one ()
 {
       if (st == GAME_OVER) return -1;
       select_setup (tv_people, 0);
@@ -1721,7 +1719,7 @@ long get_people_one ()
       return people_select;
 }
 
-long get_people_two_main () 
+int get_people_two_main () 
 {
       if (st == GAME_OVER) return -1;
       select_setup (tv_people, 0);
@@ -1737,12 +1735,12 @@ long get_people_two_main ()
       return people_select;
 }
 
-long get_people_two_vice ()
+int get_people_two_vice ()
 {
       return people_select_vice;
 }
 
-long get_people_list_num ()
+int get_people_list_num ()
 {
       if (st == GAME_OVER) return 0;
       select_setup (tv_people, 1);
@@ -1755,7 +1753,7 @@ long get_people_list_num ()
       return people_select_num;
 }
 
-long get_people_list (long ind)
+int get_people_list (int ind)
 {
       return people_select_list[ind];
 }
@@ -1767,7 +1765,7 @@ void begin_city_list()
       city_list_num = 0;
 }
 
-void add_city_list(char * name, long scope, float hpmax, float hp, char * role, long nmos, char * mayor, char * treasurer, float fengshui)
+void add_city_list(char * name, int scope, float hpmax, float hp, char * role, int nmos, char * mayor, char * treasurer, float fengshui)
 {
       tv_add_city (city_list_num, tv_city, name, scope, hpmax, hp, role, nmos, mayor, treasurer, fengshui);
       ++ city_list_num;
@@ -1779,7 +1777,7 @@ void end_city_list()
       select_setup (tv_city, 0);
 }
 
-long get_city_mcs_select ()
+int get_city_mcs_select ()
 {
       if (st == GAME_OVER) return -1;
       check_city_mcs_select = -1;
@@ -1798,7 +1796,7 @@ void begin_inst_list()
       inst_list_num = 0;
 }
 
-void add_inst_list(char * name, long ntech, char * mos, char * on_study, float point, long left_round)
+void add_inst_list(char * name, int ntech, char * mos, char * on_study, float point, int left_round)
 {
       GtkListStore * gls = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tv_inst)));
       GtkTreeIter iter;
@@ -1823,7 +1821,7 @@ void end_inst_list()
       select_setup (tv_inst, 0);
 }
 
-long get_inst_select ()
+int get_inst_select ()
 {
       if (st == GAME_OVER) return -1;
       check_inst_select = -1;
@@ -1834,13 +1832,13 @@ long get_inst_select ()
 }
 
 static int inst_tech_list_num;
-void begin_inst_tech_list ()
+void begin_inst_tech_list (char * title)
 {
       tv_clear (tv_inst_tech);
       inst_tech_list_num = 0;
 }
 
-void add_inst_tech_list (char * name, float study, long scond)
+void add_inst_tech_list (char * name, float study, int scond)
 {
       tv_add_tech (inst_tech_list_num, tv_inst_tech, name, study, scond);
       ++ inst_tech_list_num;
@@ -1851,7 +1849,7 @@ void end_inst_tech_list ()
       select_setup (tv_inst_tech, 0);
 }
 
-void show_inst_mos (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void show_inst_mos (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_clear (tv_inst_mos);
       tv_add_people (0, tv_inst_mos, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
@@ -1866,7 +1864,7 @@ void begin_train_list()
       train_list_num = 0;
 }
 
-void add_train_list(char * name, long item, char * mos, long round)
+void add_train_list(char * name, int item, char * mos, int round)
 {
       GtkListStore * gls = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tv_train)));
       GtkTreeIter iter;
@@ -1888,7 +1886,7 @@ void end_train_list()
       select_setup (tv_train, 0);
 }
 
-long get_train_select ()
+int get_train_select ()
 {
       if (st == GAME_OVER) return -1;
       check_train_select = -1;
@@ -1898,7 +1896,7 @@ long get_train_select ()
       return check_train_select;
 }
 
-void show_train_mos (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void show_train_mos (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_clear (tv_train_mos);
       tv_add_people (0, tv_train_mos, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
@@ -1919,7 +1917,7 @@ void begin_saloon_list()
       saloon_list_num = 0;
 }
 
-void add_saloon_list (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst, float price)
+void add_saloon_list (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst, float price)
 {
       tv_add_people (saloon_list_num, tv_people, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, price);
       ++ saloon_list_num;
@@ -1931,7 +1929,7 @@ void end_saloon_list()
       select_setup (tv_people, 0);
 }
 
-long get_saloon_select ()
+int get_saloon_select ()
 {
       if (st == GAME_OVER) return -1;
       people_select_st = 0;
@@ -1942,7 +1940,7 @@ long get_saloon_select ()
       return people_select;
 }
 
-long sel_battle_scale (char * msg)
+int sel_battle_scale (char * msg)
 {
       if (st == GAME_OVER) return -1;
       msg_map (msg);
@@ -1961,7 +1959,7 @@ long sel_battle_scale (char * msg)
       return battle_scale;
 }
 
-void battle_start (long max_turn_) 
+void battle_start (int max_turn_) 
 {
       int i, j;
       buf_clear (buf_battle_msg);
@@ -1986,7 +1984,7 @@ void battle_msg (char *msg)
       swin_set_follow (swin_battle_msg);
 }
 
-void battle_set (long side, char * role, float power, float winp, float celve, float hpmax_, float hp, float def)
+void battle_set (int side, char * role, float power, float winp, float celve, float hpmax_, float hp, float def)
 {
       gtk_label_set_label (GTK_LABEL(label_battle_role[side]), role);
       pb_set_value (pb_battle_power[side], power, 100);
@@ -1998,18 +1996,18 @@ void battle_set (long side, char * role, float power, float winp, float celve, f
       hpmax[side] = hpmax_;
 }
 
-void battle_tech_set (long side , long tech)
+void battle_tech_set (int side , int tech)
 {
       onoff_widget (label_battle_tech[side][tech], 1);
 }
 
-void battle_change_hp (long side, float hp, float def)
+void battle_change_hp (int side, float hp, float def)
 {
       pb_set_value (pb_battle_hp [side], hp,  hpmax[side]);
       pb_set_value (pb_battle_def[side], def, defmax);
 }
 
-void battle_change_st (long side, long bst, long is_quit, long btime, long fst)
+void battle_change_st (int side, int bst, int is_quit, int btime, int fst)
 {
       if (fst)
             label_set_color_red (label_battle_st[side][0]);
@@ -2027,7 +2025,7 @@ void battle_change_st (long side, long bst, long is_quit, long btime, long fst)
             label_set_color_no  (label_battle_st[side][2]);
 }
 
-void battle_active_tech (long side , long tech , float shp, float ohp, float sdef, float odef)
+void battle_active_tech (int side , int tech , float shp, float ohp, float sdef, float odef)
 {
       label_set_color_blue (label_battle_tech[side][tech]);
       pb_set_value (pb_battle_hp[side], shp, hpmax[side]);
@@ -2036,7 +2034,7 @@ void battle_active_tech (long side , long tech , float shp, float ohp, float sde
       pb_set_value (pb_battle_def[1 - side], odef, defmax);
 }
 
-void battle_turn_start (long turn) 
+void battle_turn_start (int turn) 
 {
       int i, j;
       if (st == GAME_OVER) return;
@@ -2061,7 +2059,7 @@ void battle_end ()
 }
 
 static int exchange_people_list_num[2];
-void begin_exchange_people_list(long side, char * title)
+void begin_exchange_people_list(int side, char * title)
 {
       if (side)
             tv_clear (tv_exchange_out);
@@ -2072,7 +2070,7 @@ void begin_exchange_people_list(long side, char * title)
       exchange_people_list_num[side] = 0;
 }
 
-void add_exchange_people_list(long side, char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void add_exchange_people_list(int side, char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       if (side)
             tv_add_people (exchange_people_list_num[side] ++, tv_exchange_out, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
@@ -2080,7 +2078,7 @@ void add_exchange_people_list(long side, char * name, char * role, long job, lon
             tv_add_people (exchange_people_list_num[side] ++, tv_exchange_in, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
 }
 
-void end_exchange_people_list(long side)
+void end_exchange_people_list(int side)
 {
       if (side)
       {
@@ -2093,7 +2091,7 @@ void end_exchange_people_list(long side)
       }
 }
 
-long get_exchange_people_list_num (long side)
+int get_exchange_people_list_num (int side)
 {
       if (side)
       {
@@ -2111,7 +2109,7 @@ long get_exchange_people_list_num (long side)
       }
 }
 
-long get_exchange_people_list (long side, long isel)
+int get_exchange_people_list (int side, int isel)
 {
       if (side)
       {
@@ -2131,7 +2129,7 @@ void begin_study_tech_list (char * name)
       study_tech_list_num = 0;
 }
 
-void add_study_tech_list (char * name, float study, long scond)
+void add_study_tech_list (char * name, float study, int scond)
 {
       tv_add_tech (study_tech_list_num, tv_study_tech, name, study, scond);
       ++ study_tech_list_num;
@@ -2149,7 +2147,7 @@ void begin_study_people_list ()
       study_people_list_num = 0;
 }
 
-void add_study_people_list (char * name, char * role, long job, long loc, float hpmax, float hp, float * prop, long is_quit, long lst, long pst)
+void add_study_people_list (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst)
 {
       tv_add_people (study_people_list_num, tv_study_people, name, role, job, loc, hpmax, hp, prop, is_quit, lst, pst, -1);
       ++ study_people_list_num;
@@ -2161,7 +2159,7 @@ void end_study_people_list ()
       gtk_window_set_transient_for (GTK_WINDOW(win_study), GTK_WINDOW(win_main));
 }
 
-long get_study_select (long * tech)
+int get_study_select (int * tech)
 {
       if (st == GAME_OVER) return -1;
       study_tech = -1;
@@ -2173,7 +2171,7 @@ long get_study_select (long * tech)
       return study_people;
 }
 
-long get_obj_type ()
+int get_obj_type ()
 {
       if (st == GAME_OVER) return -1;
       obj_type = -1;
@@ -2186,12 +2184,12 @@ long get_obj_type ()
       return obj_type;
 }
 
-long get_obj ()
+int get_obj ()
 {
       return obj;
 }
 
-void game_end (long res)
+void game_end (int res)
 {
       if (st != GAME_OVER) 
       {

@@ -1,7 +1,6 @@
 package mbg
 
 import (
-	"mbg"
 	"os"
 )
 
