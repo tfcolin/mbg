@@ -39,7 +39,7 @@ type UserView interface {
       NoteOutTrain (pind int, tind int) // 某人撤离训练所
       NoteJoin (pind int, rind int) // 某人加入某阵营
       NoteQuit (pind int, rind int) // 某人离开某阵营
-      NotePayTax (send_role int, recv_role int, recv_city int, tax float32) // 某人向某城支付租金
+      NotePayTax (send_role int, recv_role int, recv_city int, tax float32) // 某角色向某城支付租金
       NoteCollectTax (rind int, cind int, tax float32) // 某角色到达自身城市收取税收
 
       RoleContinueAction (rind int) // 某阵营连续行动 (在 RoleStartAction 之前调用)
