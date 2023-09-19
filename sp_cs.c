@@ -4,20 +4,12 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "sp_cs.h"
+
 int nx, ny;
 WINDOW ** win ;
 WINDOW * msgwin;
 int cx, cy;
-
-void cs_init (int * nx, int * ny);
-void cs_end ();
-void pexit (char * msg);
-void redraw_win (SPDriver * sp, int x, int y);
-
-int  (slf)  (SPDriver * sp, int * x, int * y, int * dir);
-int  (csf)  (SPDriver * sp); 
-void (nwf) (SPDriver * sp, int res); 
-void (ncf) (SPDriver * sp, int x, int y, int cx, int cy);
 
 int  (slf)  (SPDriver * sp, int * x, int * y, int * dir)
 {
@@ -27,7 +19,7 @@ int  (slf)  (SPDriver * sp, int * x, int * y, int * dir)
       wprintw (msgwin, "Step: %d", sp->step);
 
       int set = 0;
-      while (c = wgetch(msgwin))
+      while (c = wgetch(stdscr))
       {
             int ocx = cx;
             int ocy = cy;
@@ -35,10 +27,10 @@ int  (slf)  (SPDriver * sp, int * x, int * y, int * dir)
             switch (c)
             {
             case 'q': return -1; 
-            case 'j': ++ cy; break;
-            case 'k': -- cy; break;
-            case 'h': -- cx; break;
-            case 'l': ++ cx; break;
+            case 'j': case KEY_DOWN: ++ cy; break;
+            case 'k': case KEY_UP: -- cy; break;
+            case 'h': case KEY_LEFT: -- cx; break;
+            case 'l': case KEY_RIGHT: ++ cx; break;
             case ' ': set = 1; break;
             }
             if (cx < 0) cx = 0;
@@ -107,6 +99,10 @@ void cs_init (int * nx, int * ny)
       cbreak();
       curs_set(0);
 
+      keypad (stdscr,TRUE);
+
+      wrefresh (stdscr);
+
       getmaxyx (stdscr, ny_, nx_);
 
       *nx = nx_;
@@ -146,6 +142,7 @@ int main ()
       int i, j;
       int tnx, tny, lnx, lny;
       int bx0, by0, bx, by;
+
       cs_init (&tnx, &tny);
 
       lnx = 5;
@@ -155,14 +152,14 @@ int main ()
       bx0 = (tnx - nx * lnx) / 2;
       by0 = (tny - 3 - ny * lny) / 2;
 
+      if (tnx < 8 * lnx || tny < 8 * lny + 2) pexit ("Terminal screen two small.");
+
       msgwin = newwin (1, COLS - 2, LINES - 2, 1); 
       wclear (msgwin);
       wprintw (msgwin, "Set number of blocks (3x3, 4x4, 5x5, 6x6, 7x7):");
       char c = wgetch(msgwin);
       if (c > '7' || c < '3') c = '5';
       nx = ny = c - '0';
-
-      if (tnx < nx * lnx && tny < ny * lny + 2) pexit ("Terminal screen two small.");
 
       win = malloc (sizeof(WINDOW *) * nx * ny);
 

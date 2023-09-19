@@ -5,19 +5,21 @@
 2) ncurses 的前端
 3) gtk3 的前端
 
-编译方法为:
+编译运行方法为:
 
-1) 游戏引擎
+1) 游戏引擎 (无法直接运行)
 make
 
 2) 基于 ncurses 的前端
 make sp_cs
+./sp_cs
 
 3) 基于 gtk3 的前端
 make sp_gtk
+./sp_gtk
 
-依赖库:
+依赖:
 
 ncurses
 gtk3
-
+pkg-config
