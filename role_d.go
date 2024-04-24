@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/tfcolin/dsg"
+	"gitee.com/tfcolin/dsg"
 )
 
 type Role struct {
@@ -85,11 +85,11 @@ func (r *Role) Save(fout io.Writer) {
 func (r *Role) Load(fin io.Reader) {
 	fmt.Fscan(
 		fin, &r.name, &r.loc, &r.money, &r.dir, &r.mst, &r.mtime, &r.cst, &r.ast, &r.atime)
-	r.tech.Load(fin)
-	r.mos.Load(fin)
-	r.mcs.Load(fin)
-	r.sos.Load(fin)
-	r.tos.Load(fin)
+	r.tech = dsg.LoadSet(fin)
+	r.mos = dsg.LoadSet(fin)
+	r.mcs = dsg.LoadSet(fin)
+	r.sos = dsg.LoadSet(fin)
+	r.tos = dsg.LoadSet(fin)
 	for i := 0; i < CARD_COUNT; i++ {
 		fmt.Fscan(fin, &r.cards[i])
 	}

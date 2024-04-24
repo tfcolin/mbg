@@ -423,7 +423,7 @@ func (oi * TestOperationInterface)     ForceBattle (robj int) {// 因为公愤�
       fmt.Printf ("role %d force battle by war-declarence\n", robj)
 }
 
-func (oi * TestOperationInterface)     SelRoleAction (clist []int) int {// 选择阵营行动: -1: 移动, >=0: 使用卡片
+func (oi * TestOperationInterface)     SelRoleAction (clist []int) int {// 选择阵营行动: -1: 移动, >=0: 使用卡片, -2: 中途退出游戏. -3: 保存游戏进度.
       oi.PreOperation()
       var action int
       for {
@@ -436,6 +436,13 @@ func (oi * TestOperationInterface)     SelRoleAction (clist []int) int {// 选�
       }
       if action < -1 {action = -1}
       return action
+}
+
+func (oi * TestOperationInterface)     GetFileName () string { // 返回游戏进度文件名 (返回空串表示取消) ( SelRoleAction = -3 时会紧接着被调用)
+	return ""
+}
+
+func (oi * TestOperationInterface)	SaveReport (is_success bool) { // 保存文件通知
 }
 
 func (oi * TestOperationInterface)     IsOccuCity (cind int) bool {// 选择是否占领空白城市
@@ -598,18 +605,6 @@ func (oi * TestOperationInterface)     SelCardObjPeople (card_id int, plist []in
       return oi.SelOneLessThan (len(plist))
 }
 
-func (oi * TestOperationInterface)     SelCardObjRoleAndPeople (card_id int, rplist []int) (sr_id int) {// 返回卡片作用人员 (每阵营一人供选择) -1:取消
-      oi.PreOperation()
-      fmt.Printf ("select person as card %d object: ", card_id)
-      for _, i := range rplist {
-            fmt.Printf (" %d ", i)
-      }
-      fmt.Printf ("\n")
-      fmt.Scan (&sr_id)
-      if sr_id < 0 || sr_id >= oi.d.nrole {sr_id = -1}
-      return
-}
-
 func (oi * TestOperationInterface)     SelCardObjRole (card_id int) int {// 返回选择卡片作用阵营 -1: 取消
       oi.PreOperation()
       fmt.Printf ("select object role of card %d\n", card_id)
@@ -665,7 +660,9 @@ func (oi * TestOperationInterface)     IsCancelTrain (pind int, item Property, l
       fmt.Scan (&res)
       return res
 }
-func (oi * TestOperationInterface)     StartAllocate () {// 开始人员调度
+
+// 开始人员调度, 通知 UI 哪些位置是可用的 (av_loc [ngrid]bool: 位置是否可被调度)
+func (oi * TestOperationInterface)  StartAllocate (av_loc []bool) {
       oi.PreOperation()
       fmt.Printf ("Start allocating.\n")
 }

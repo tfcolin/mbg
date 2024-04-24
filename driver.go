@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/tfcolin/dsg"
+	"gitee.com/tfcolin/dsg"
 )
 
 func Init() {
@@ -27,7 +27,7 @@ func LoadMap(mfile io.Reader) (d *Driver) {
 	fmt.Fscan(mfile, &d.ngrid, &nx, &ny, &d.win_money)
 	d.nx = nx
 	d.ny = ny
-	d.turn = 0
+	d.turn = 1
 
 	d.board = make([]BoardPoint, d.ngrid)
 	for i := 0; i < d.ngrid; i++ {
@@ -69,7 +69,7 @@ func LoadMap(mfile io.Reader) (d *Driver) {
 		p.role = -1
 		p.job = -1
 		p.loc = -1
-		p.hpmax = P_HP_BASE + tp*P_HP_SCALE
+		p.hpmax = P_HP_BASE + tp * 0.2 * P_HP_SCALE
 		p.hp = p.hpmax
 
 		p.lst = 0
@@ -97,11 +97,11 @@ func LoadMap(mfile io.Reader) (d *Driver) {
 		}
 		switch city.scope {
 		case 0:
-			city.hpmax = 1000
+			city.hpmax = DEF_SMALL
 		case 1:
-			city.hpmax = 1500
+			city.hpmax = DEF_MEDIUM
 		case 2:
-			city.hpmax = 2000
+			city.hpmax = DEF_BIG
 		}
 		city.hp = city.hpmax
 		fmt.Fscan(mfile, &(city.mayor), &(city.treasurer))
@@ -314,12 +314,30 @@ func (d *Driver) RoundEnd() int {
 
 	d.uv.EndTurn(d.turn)
 
-	if d.turn%ALLOCATE_TURN == 0 {
+	if d.turn % ALLOCATE_TURN == 0 {
 		for rind := 0; rind < d.nrole; rind++ {
-			d.oi[rind].StartAllocate()
 			r := &(d.roles[rind])
+			if r.loc == -1 {continue}
 		sel:
 			for {
+				av_locs := make ([]bool, d.ngrid)
+				for i, b := range d.board {
+					switch b.class {
+					case 1:
+						if d.cities[b.base].role == rind {
+							av_locs[i] = true
+						}
+					case 3:
+						if d.insts[b.base].mos[rind] != -1 {
+							av_locs[i] = true
+						}
+					case 4:
+						if d.trains[b.base].mos[rind] != -1 {
+							av_locs[i] = true
+						}
+					}
+				}
+				d.oi[rind].StartAllocate (av_locs)
 				st, obj := d.oi[rind].SelAllocObj()
 				if obj == -1 {
 					st = -1
@@ -383,7 +401,9 @@ func (d *Driver) RoundEnd() int {
 }
 
 // 返回: -3: 强制退出. -2: ui 或 oi 未准备好. -1: 平局. >=0: 胜利阵营号
-func (d *Driver) Run(max_turn int) int {
+// max_turn: 最大回合数
+// crole: 首个操作角色
+func (d *Driver) Run (max_turn int, crole int) int {
 
 	if d.uv == nil {
 		return -2
@@ -394,15 +414,18 @@ func (d *Driver) Run(max_turn int) int {
 		}
 	}
 
-	d.turn = 1
 	d.uv.StartGame(d)
 	for i := 0; i < d.nrole; i++ {
 		d.oi[i].StartGame(d, i)
 	}
 
 	var res int
+	is_first_round := true
 	for {
 		for i := 0; i < d.nrole; i++ {
+			if is_first_round && i < crole {
+				continue
+			}
 			if d.RoleAction(i) {
 				d.roles[i].cst = false
 				i--
@@ -413,6 +436,7 @@ func (d *Driver) Run(max_turn int) int {
 			}
 		}
 		res = d.RoundEnd()
+		is_first_round = false
 		if res == -2 {
 			return -1
 		}
@@ -437,4 +461,14 @@ func (d *Driver) Run(max_turn int) int {
 	res = imax_money
 
 	return res
+}
+
+// only for test
+func (d *Driver) FillCards(ncards int) {
+	for i := 0; i < d.nrole; i++ {
+		role := &(d.roles[i])
+		for j := 0; j < CARD_COUNT; j++ {
+			role.cards[j] = ncards
+		}
+	}
 }

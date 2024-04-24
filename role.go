@@ -1,9 +1,11 @@
 package mbg
 
 import (
+	// "fmt"
 	"math/rand"
+	"os"
 
-	"github.com/tfcolin/dsg"
+	"gitee.com/tfcolin/dsg"
 )
 
 // atime resatime : 0: 正常; 1: 减为零
@@ -23,6 +25,10 @@ func (r *Role) ChangeMoney(dm float32) (real_dm float32, res int) {
 // 返回 0: 正常; 1: 胜利; 2: 破产
 func (d *Driver) RoundRole(rind int) int {
 	r := &(d.roles[rind])
+	if r.loc == -1 {
+		return 2
+	}
+
 	if r.mst != 0 {
 		st := r.mst
 		r.mtime--
@@ -55,8 +61,9 @@ func (d *Driver) RoundRole(rind int) int {
 	if r.money <= 0 {
 		// 死亡结算
 		r.money = 0
-		r.loc = -1
 		d.uv.NoteRoleLoss(rind)
+		d.board[r.loc].roles[rind] = false
+		r.loc = -1
 		for _, pind := range r.mos.GetAllLabel() {
 			d.PQuit(pind, true)
 		}
@@ -96,9 +103,9 @@ func (d *Driver) RoundRole(rind int) int {
 func (r *Role) GetMaxStep() int {
 	switch r.mst {
 	case 1:
-		return MAX_STEP / SLOW_SCALE
+		return int(MAX_STEP / SLOW_SCALE)
 	case 2:
-		return MAX_STEP * FAST_SCALE
+		return int(MAX_STEP * FAST_SCALE)
 	case 3:
 		return 0
 	case 0:
@@ -124,11 +131,26 @@ func (d *Driver) RoleAction(rind int) (is_cont bool) {
 sel:
 	for {
 		action := d.oi[rind].SelRoleAction(r.cards[:])
-		if action == -2 {
+		switch action {
+		case -2:
 			force_quit = true
 			return false
-		}
-		if action == -1 {
+
+		case -3:
+			fname := d.oi[rind].GetFileName ()
+			if len(fname) > 0 {
+				// for debug
+				// fmt.Println (fname)
+				fout, err := os.Create (fname)
+				if err == nil {
+					d.Save (fout, rind)
+					d.oi[rind].SaveReport (true) 
+				} else {
+					d.oi[rind].SaveReport (false) 
+				}
+			}
+
+		case -1:
 			max_step := r.GetMaxStep()
 			var step int
 			if max_step == 0 {
@@ -166,8 +188,8 @@ sel:
 				d.uv.UnSetRobber(r.loc)
 				res := d.Battle(rind, -1, -1, -1, 1)
 				if res != 1 {
-					r.ChangeMoney(-ROBBER_STEAL)
-					d.uv.StealMoney(-1, rind, -ROBBER_STEAL)
+					real_dm, _ := r.ChangeMoney(-ROBBER_STEAL)
+					d.uv.StealMoney(-1, rind, real_dm)
 				}
 			}
 
@@ -209,8 +231,10 @@ sel:
 			case 5:
 				d.ChanceAction(rind)
 			}
-			break
-		} else {
+
+			break sel
+
+		default:
 			if r.cards[action] == 0 {
 				continue
 			}
@@ -244,7 +268,7 @@ sel:
 			case 2:
 				for {
 					or_id := d.oi[rind].SelCardObjRole(action)
-					if or_id == -1 {
+					if or_id == -1 || d.roles[or_id].loc == -1 {
 						continue sel
 					}
 					if card.odir == 1 && or_id != rind {
@@ -272,6 +296,9 @@ sel:
 			case 4:
 				var sel_rset *dsg.Set = dsg.InitSet(d.nrole)
 				for i := 0; i < d.nrole; i++ {
+					if d.roles[i].loc == -1 {
+						continue
+					}
 					if card.odir == 1 && i != rind {
 						continue
 					}
@@ -342,7 +369,7 @@ sel:
 								}
 								plist = append(plist, inst.mos[i])
 							}
-							sr_id := d.oi[rind].SelCardObjRoleAndPeople(action, plist)
+							sr_id := d.oi[rind].SelCardObjPeople(action, plist)
 							if sr_id == -1 {
 								continue sel1
 							}
@@ -367,7 +394,7 @@ sel:
 								}
 								plist = append(plist, train.mos[i])
 							}
-							sr_id := d.oi[rind].SelCardObjRoleAndPeople(action, plist)
+							sr_id := d.oi[rind].SelCardObjPeople(action, plist)
 							if sr_id == -1 {
 								continue sel1
 							}

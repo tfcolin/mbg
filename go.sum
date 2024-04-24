@@ -1,4 +1,10 @@
-github.com/tfcolin/dsg v1.0.0 h1:7A3Inq4j0675/m71Yjno+bQYeMw90crt9R1V3PgZgAU=
-github.com/tfcolin/dsg v1.0.0/go.mod h1:KagA4h1oQkvKMIqS3t3xJV6xymy+/nQso+n283zSEuA=
-github.com/tfcolin/dsg v1.0.1 h1:8MxKWvaLQnOcyMBW0/JesdvOkUkfoxghvVNgkTuVqcs=
-github.com/tfcolin/dsg v1.0.1/go.mod h1:MbDjT9eOjWfxgug8b9QqtPAQrCP7Wa+0cM10nDZF4LE=
+gitee.com/tfcolin/dsg v1.3.0 h1:0OTvNnjX7TCJQdOrSYt0Clan6rAI4mjgS0vnWRyXIn8=
+gitee.com/tfcolin/dsg v1.3.0/go.mod h1:2tO6yx0gs68hX+R0aRJb/bsme6A8pR0MRwp6RCcYvnI=
+gitee.com/tfcolin/dsg v1.3.1-0.20230202083722-0aa2f525095f h1:hJanfFokq4ewnsw83DbxzWCAJMnmK1jrogsE+jqKun0=
+gitee.com/tfcolin/dsg v1.3.1-0.20230202083722-0aa2f525095f/go.mod h1:2tO6yx0gs68hX+R0aRJb/bsme6A8pR0MRwp6RCcYvnI=
+gitee.com/tfcolin/dsg v1.3.1-0.20230202085545-cfe4315cd256 h1:FLEnFNX6HM5+3z84dwbohuJLxU3G8VZm2GqIeCBbHqk=
+gitee.com/tfcolin/dsg v1.3.1-0.20230202085545-cfe4315cd256/go.mod h1:2tO6yx0gs68hX+R0aRJb/bsme6A8pR0MRwp6RCcYvnI=
+gitee.com/tfcolin/dsg v1.3.1-0.20230202085651-4dd3f39650e9 h1:0IPwUyNS1Raj9XvPML7MGRlRlSF7wB//sywcjPdPZKo=
+gitee.com/tfcolin/dsg v1.3.1-0.20230202085651-4dd3f39650e9/go.mod h1:2tO6yx0gs68hX+R0aRJb/bsme6A8pR0MRwp6RCcYvnI=
+github.com/gotk3/gotk3 v0.6.1 h1:GJ400a0ecEEWrzjBvzBzH+pB/esEMIGdB9zPSmBdoeo=
+github.com/gotk3/gotk3 v0.6.1/go.mod h1:/hqFpkNa9T3JgNAE2fLvCdov7c5bw//FHNZrZ3Uv9/Q=

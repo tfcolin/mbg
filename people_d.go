@@ -51,7 +51,7 @@ func (d * Driver) GetPeopleInfo (pind int) (name string, role, job, loc int, hpm
 func (o * Officer) GetProp (ind Property) float32 {
       value := o.prop[ind]
       if o.pst != 0 {
-            value *= 0.7
+            value *= P_POISON_PROP_SCALE
       }
       return value
 }
@@ -89,7 +89,7 @@ func (o * Officer) GetPrice () float32 {
             if o.prop[i] > max {max = o.prop[i]}
       }
 
-      return ((10 * sum + 50 * max) * (0.9 + 0.2 * rand.Float32()))
+      return (P_PRICE_SCALE * (0.1 * sum + 0.5 * max) * (0.9 + 0.2 * rand.Float32()))
 }
 
 func (p * Officer) Save (fout io.Writer) {

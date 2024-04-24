@@ -152,8 +152,8 @@ int get_exchange_people_list (int side, int isel);
 void begin_study_tech_list (char * name);
 void add_study_tech_list (char * name, float study, int scond);
 void end_study_tech_list ();
-void begin_study_people_list ();
 void add_study_people_list (char * name, char * role, int job, int loc, float hpmax, float hp, float * prop, int is_quit, int lst, int pst);
+void begin_study_people_list ();
 void end_study_people_list ();
 // return people list num. -1: cancel. (waiting)
 // tech [out] tech list num.

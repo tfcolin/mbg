@@ -91,7 +91,7 @@ func (d * Driver) RoundTrain (tind int) {
                         if train.round[i] <= 0 {
                               train.mos[i] = -1
                               train.round[i] = 0
-                              value := float32(rand.Intn (2) + 1)
+                              value := float32(rand.Intn (TRAIN_PLUS) + 1)
                               if p.prop[train.item] + value > 100 {value = 100 - p.prop[train.item]}
                               p.prop[train.item] += value
                               d.oi[i].NoteFinishTrain (pind, train.item, value)
@@ -108,7 +108,7 @@ func (d * Driver) RoundTrain (tind int) {
 func (d * Driver) RoundCity (cind int) {
       c := &(d.cities[cind])
 
-      c.ChangeHP (c.hpmax * 0.1)
+      c.ChangeHP (c.hpmax * DEF_PLUS_SCALE)
 
       if c.mayor != -1 {
             if d.people[c.mayor].lst != 0 {

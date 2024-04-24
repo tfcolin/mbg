@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/tfcolin/dsg"
+	"gitee.com/tfcolin/dsg"
 )
 
 type BoardPoint struct {
@@ -127,7 +127,7 @@ func (city *City) Save(fout io.Writer) {
 
 func (city *City) Load(fin io.Reader) {
 	fmt.Fscan(fin, &city.name, &city.scope, &city.hpmax, &city.hp, &city.role, &city.mayor, &city.treasurer, &city.fengshui)
-	city.mos.Load(fin)
+	city.mos = dsg.LoadSet(fin)
 }
 
 func (inst *Institute) Save(fout io.Writer) {
@@ -227,7 +227,7 @@ func (bp *BoardPoint) Save(fout io.Writer) {
 
 	fmt.Fprintf(fout, "%d ", len(bp.roles))
 	for _, i := range bp.roles {
-		fmt.Fprintf(fout, "%d ", i)
+		fmt.Fprintf(fout, "%t ", i)
 	}
 	fmt.Fprintf(fout, "\n")
 

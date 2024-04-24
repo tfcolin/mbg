@@ -3,7 +3,7 @@ package mbg
 import (
 	"math/rand"
 
-	"github.com/tfcolin/dsg"
+	"gitee.com/tfcolin/dsg"
 )
 
 func (b *BattleState) ChangeHP(dhp float32) {
@@ -40,7 +40,7 @@ func (b *BattleState) ChangeHP(dhp float32) {
 	}
 }
 
-func (sst *BattleState) RunTech(tind int, dhp float32, ost *BattleState) (is_run bool, is_die bool) {
+func (sst *BattleState) RunTech (tind int, dhp float32, ost *BattleState) (is_run bool, is_die bool) {
 	tech := &(techs[tind])
 
 	if sst.latency[tind] != 0 {
@@ -86,7 +86,7 @@ func DoBst(bst []BattleState) {
 }
 
 // return result: 0: 平局. 1: 发动方胜. -1: 被动方胜
-func RunBattle(uv UserView, bst []BattleState, scale int) int {
+func RunBattle (uv UserView, bst []BattleState, scale int) int {
 
 	var max_bt int = BATTLE_ROUND_MIN + BATTLE_ROUND_STEP*scale
 	uv.BattleStart(&(bst[0]), &(bst[1]), max_bt)
@@ -315,12 +315,12 @@ func InitTech() {
 
 	techs[0] = Tech{
 		name:    "弓箭",
-		study:   5000,
+		study:   350,
 		scond:   0,
 		lprob:   0,
 		hprob:   0.8,
-		lvalue:  20,
-		hvalue:  30,
+		lvalue:  25,
+		hvalue:  40,
 		latency: 2,
 	}
 
@@ -331,12 +331,12 @@ func InitTech() {
 
 	techs[1] = Tech{
 		name:    "火箭",
-		study:   6000,
+		study:   420,
 		scond:   0,
 		lprob:   0,
-		hprob:   0.6,
-		lvalue:  15,
-		hvalue:  15,
+		hprob:   0.7,
+		lvalue:  25,
+		hvalue:  25,
 		latency: 3,
 	}
 
@@ -348,13 +348,13 @@ func InitTech() {
 
 	techs[2] = Tech{
 		name:    "医疗",
-		study:   7500,
+		study:   450,
 		scond:   0,
 		lprob:   0,
-		hprob:   0.7,
-		lvalue:  20,
-		hvalue:  30,
-		latency: 3,
+		hprob:   0.6,
+		lvalue:  30,
+		hvalue:  60,
+		latency: 4,
 	}
 
 	techs[2].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -364,13 +364,13 @@ func InitTech() {
 
 	techs[3] = Tech{
 		name:    "盾牌",
-		study:   8000,
+		study:   360,
 		scond:   2,
 		lprob:   0,
-		hprob:   0.3,
+		hprob:   0.75,
 		lvalue:  1,
 		hvalue:  1,
-		latency: 5,
+		latency: 4,
 	}
 
 	techs[3].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -384,13 +384,13 @@ func InitTech() {
 
 	techs[4] = Tech{
 		name:    "转移",
-		study:   9000,
+		study:   360,
 		scond:   2,
 		lprob:   0,
-		hprob:   0.3,
+		hprob:   0.75,
 		lvalue:  0.5,
 		hvalue:  0.5,
-		latency: 5,
+		latency: 4,
 	}
 
 	techs[4].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -403,13 +403,13 @@ func InitTech() {
 
 	techs[5] = Tech{
 		name:    "强击",
-		study:   8500,
+		study:   330,
 		scond:   1,
 		lprob:   0,
-		hprob:   0.4,
+		hprob:   0.8,
 		lvalue:  0.5,
-		hvalue:  1.0,
-		latency: 5,
+		hvalue:  1.2,
+		latency: 3,
 	}
 
 	techs[5].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -421,13 +421,13 @@ func InitTech() {
 
 	techs[6] = Tech{
 		name:    "离间",
-		study:   7000,
+		study:   430,
 		scond:   1,
 		lprob:   0,
-		hprob:   0.4,
-		lvalue:  0.2,
-		hvalue:  0.3,
-		latency: 5,
+		hprob:   0.8,
+		lvalue:  0.4,
+		hvalue:  0.8,
+		latency: 4,
 	}
 
 	techs[6].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -439,13 +439,13 @@ func InitTech() {
 
 	techs[7] = Tech{
 		name:    "雷击",
-		study:   9000,
+		study:   400,
 		scond:   0,
-		lprob:   0.1,
-		hprob:   0.1,
+		lprob:   0.2,
+		hprob:   0.2,
 		lvalue:  100,
-		hvalue:  180,
-		latency: 6,
+		hvalue:  200,
+		latency: 7,
 	}
 
 	techs[7].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -455,13 +455,13 @@ func InitTech() {
 
 	techs[8] = Tech{
 		name:    "混乱",
-		study:   9500,
+		study:   450,
 		scond:   1,
 		lprob:   0,
-		hprob:   0.5,
+		hprob:   0.4,
 		lvalue:  0,
 		hvalue:  0,
-		latency: 5,
+		latency: 6,
 	}
 
 	techs[8].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
@@ -472,24 +472,24 @@ func InitTech() {
 
 	techs[9] = Tech{
 		name:    "内讧",
-		study:   13000,
+		study:   380,
 		scond:   0,
 		lprob:   0,
-		hprob:   0.25,
+		hprob:   0.2,
 		lvalue:  0,
 		hvalue:  0,
-		latency: 6,
+		latency: 8,
 	}
 
 	techs[9].do = func(sst *BattleState, ost *BattleState, dhp float32, value float32) (sdhp, odhp float32) {
 		ost.bst = 2
-		ost.btime = 3
+		ost.btime = 2
 		return
 	}
 
 	techs[10] = Tech{
 		name:    "攻城",
-		study:   10000,
+		study:   500,
 		scond:   1,
 		lprob:   1,
 		hprob:   1,
@@ -510,7 +510,7 @@ func InitTech() {
 
 	techs[11] = Tech{
 		name:    "流放",
-		study:   11000,
+		study:   650,
 		scond:   3,
 		lprob:   0,
 		hprob:   0.5,
@@ -524,14 +524,4 @@ func InitTech() {
 		return
 	}
 
-}
-
-// only for test
-func (d *Driver) FillCards(ncards int) {
-	for i := 0; i < d.nrole; i++ {
-		role := &(d.roles[i])
-		for j := 0; j < CARD_COUNT; j++ {
-			role.cards[j] = ncards
-		}
-	}
 }

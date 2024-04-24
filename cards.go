@@ -75,7 +75,7 @@ func InitCard () {
       }
 
       cards[5].do = func (d *Driver, sub int, obj int) int {
-            real_dm, _ := d.roles[obj].ChangeMoney(-2000)
+            real_dm, _ := d.roles[obj].ChangeMoney(-CARD_STEAL_MONEY)
             d.roles[sub].ChangeMoney (-real_dm)
             d.uv.StealMoney (sub, obj, real_dm)
             return 0
@@ -88,9 +88,8 @@ func InitCard () {
       }
 
       cards[6].do = func (d *Driver, sub int, obj int) int {
-            ps := d.roles[sub].mos
-            for i := 0; i < ps.GetSize(); i ++ {
-                  d.people[i].ChangeHP (d.people[i].hpmax * 0.1)
+		for _, i := range d.roles[sub].mos.GetAllLabel() {
+                  d.people[i].ChangeHP (d.people[i].hpmax * CARD_HP_RECOVER_SCALE)
             }
             d.uv.SelfRecover(sub)
             return 0
@@ -103,7 +102,7 @@ func InitCard () {
       }
 
       cards[7].do = func (d *Driver, sub int, obj int) int {
-            d.people[obj].lst = 6
+            d.people[obj].lst = 4
             d.uv.SetLiuYan(obj)
             return 0
       }
@@ -115,7 +114,7 @@ func InitCard () {
       }
 
       cards[8].do = func (d *Driver, sub int, obj int) int {
-            d.people[obj].pst = 10
+            d.people[obj].pst = 8
             d.uv.SetPoison(obj)
             return 0
       }
@@ -158,10 +157,10 @@ func InitCard () {
                   return -1
             } else {
                   d.roles[obj].ast = sub
-                  d.roles[obj].atime = 10
+                  d.roles[obj].atime = 7
                   d.roles[sub].ast = obj
-                  d.roles[sub].atime = 10
-                  d.uv.SetAlign(sub, obj)
+                  d.roles[sub].atime = 7
+                  d.uv.SetAlign (sub, obj)
                   return 0
             }
       }
@@ -179,7 +178,7 @@ func InitCard () {
                   return -1
             } else {
                   d.roles[obj].ast = -2
-                  d.roles[obj].atime = 10
+                  d.roles[obj].atime = 5
                   d.uv.SetPE(obj)
                   return 0
             }

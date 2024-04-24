@@ -8,8 +8,10 @@ func TestMBG() {
 
 	mbg.Init()
 	fin, _ := os.Open("test_game.map")
-	d, nrole := mbg.LoadMap(fin)
+	d, _ := mbg.LoadMap(fin)
 	fin.Close()
+
+      _, nrole, _, _, _, _, _, _, _ := d.GetInfo()
 
 	var uv mbg.TestUserView
 	var oi_ []mbg.TestOperationInterface
@@ -23,6 +25,6 @@ func TestMBG() {
 
 	d.ConnectUI(&uv, oi)
 
-	d.Run(10)
+	d.Run(10, 0)
 
 }

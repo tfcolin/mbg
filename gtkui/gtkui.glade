@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkTextBuffer" id="buf_battle_msg"/>
@@ -808,11 +808,17 @@
               </packing>
             </child>
             <child>
-              <object class="GtkTextView" id="tv_battle_msg">
-                <property name="height-request">150</property>
+              <object class="GtkScrolledWindow" id="swin_battle_msg">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="buffer">buf_battle_msg</property>
+                <property name="shadow-type">in</property>
+                <child>
+                  <object class="GtkTextView" id="tv_battle_msg">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="buffer">buf_battle_msg</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -1070,7 +1076,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkScrolledWindow" id="swin_main_msg">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="shadow-type">in</property>

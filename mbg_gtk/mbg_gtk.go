@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/tfcolin/mbg"
-	"github.com/tfcolin/mbg/gtkui"
+	"gitee.com/tfcolin/mbg"
+	"gitee.com/tfcolin/mbg/gtk3ui"
 )
 
 func main() {
+
+	const max_turn int = 50
 
 	mbg.Init()
 
@@ -18,32 +20,40 @@ func main() {
 	}
 
 	var fin *os.File
-	fin, _ = os.Open(os.Args[1])
+	fin, _ = os.Open (os.Args[1])
 	var d *mbg.Driver
-	d = mbg.LoadMap(fin)
+
+	var crole int
+
+	fnl := len (os.Args[1])
+	if os.Args[1][fnl - 3:] == "sav" {
+		d = new (mbg.Driver)
+		crole = d.Load (fin)
+	} else {
+		d = mbg.LoadMap (fin)
+		crole = 0
+	}
+
 	_, nrole, _, _, _, _, _, _, _ := d.GetInfo()
 	fin.Close()
 
 	/*
-	   // for test
-	   d.FillCards (10)
+	// for test
+	d.FillCards (10)
 	*/
 
-	var uv gtkui.GtkUserView
-	var oi_ []gtkui.GtkOperationInterface
+	var uv gtk3ui.GtkUserView
+	var oi_ []gtk3ui.GtkOperationInterface
 	var oi []mbg.OperationInterface
-	oi_ = make([]gtkui.GtkOperationInterface, nrole)
+	oi_ = make([]gtk3ui.GtkOperationInterface, nrole)
 	oi = make([]mbg.OperationInterface, nrole)
 
 	for i := 0; i < nrole; i++ {
 		oi[i] = &(oi_[i])
 	}
 
-	gtkui.LoadUI()
-
+	gtk3ui.LoadUI()
 	d.ConnectUI(&uv, oi)
+	d.Run(max_turn, crole)
 
-	d.Run(100)
-
-	gtkui.FreeUI()
 }
