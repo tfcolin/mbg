@@ -8,7 +8,8 @@ import (
 	"gitee.com/tfcolin/dsg"
 )
 
-// atime resatime : 0: 正常; 1: 减为零
+// real_dm: 实际资金改变量.
+// res : 0: 正常; 1: 减为零
 func (r *Role) ChangeMoney(dm float32) (real_dm float32, res int) {
 	if r.money+dm < 0 {
 		real_dm = -r.money
@@ -214,7 +215,27 @@ sel:
 						}
 					}
 					if battle_scale != -1 {
-						d.Battle(rind, -1, i, -1, battle_scale)
+                                    battle_res := d.Battle(rind, -1, i, -1, battle_scale)
+                                    var win_r, lose_r * Role
+                                    var real_dm float32
+                                    switch battle_res {
+                                    case 1:
+                                          win_r = r
+                                          lose_r = &(d.roles[i])
+                                    case -1:
+                                          win_r = &(d.roles[i])
+                                          lose_r = r
+                                    }
+                                    if (lose_r != nil && lose_r.money > 0) {
+                                          real_dm, _ = lose_r.ChangeMoney (- MEETION_STEAL * lose_r.money)
+                                          win_r.ChangeMoney (- real_dm)
+                                    }
+                                    switch battle_res {
+                                    case 1:
+                                          d.uv.StealMoney (rind, i, real_dm)
+                                    case -1:
+                                          d.uv.StealMoney (i, rind, real_dm)
+                                    }
 					}
 				}
 			}

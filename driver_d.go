@@ -24,9 +24,10 @@ const (
 	FENGSHUI_ROUND         = 5    // 每多少回合更新一次城市风水
 	MIN_EARN       float32 = 20   // 城市最小收入指数 (当无财务官或财务官的经济属性小于该值时将采用该值)
 	MAX_STEP               = 6    // 角色正常行走时的最大步长
-	FAST_SCALE     float32 = 2    // 角色急性时最大步长与 MAX_STEP 的比值
+	FAST_SCALE     float32 = 2    // 角色急行时最大步长与 MAX_STEP 的比值
 	SLOW_SCALE     float32 = 2    // 角色慢行时 MAX_STEP 与最大步长的比值
-	ROBBER_STEAL   float32 = 2000 // 未剿灭山贼时被偷的钱数
+	ROBBER_STEAL   float32 = 2000 // 未剿灭山贼时被偷的资金量
+      MEETION_STEAL  float32 = 0.04 // 遭遇战失败方向胜利方支付的资金量占失败方总资产的比例.
 	TAX_SCALE      float32 = 6    // 城市税收 (角色到达被他人占领城市所付的钱) 与城市每回合正常收入的比例
 	OWN_TAX_SCALE  float32 = 3    // 自我城市税收 (角色到达自己所占领城市时收入的钱) 与城市每回合正常收入的比例
 	HPPLUS_SCALE   float32 = 1.5  // 城市每回合恢复 HP 与市长政治属性的比例

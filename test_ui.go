@@ -39,7 +39,7 @@ func (uv * TestUserView) ChangeDir (rind int) {// 设置反向
       fmt.Printf ("change dir for Role %s\n", uv.d.roles[rind].name)
 }
 func (uv * TestUserView) StealMoney (sub_role int, obj_role int, money float32) {// 偷钱
-      fmt.Printf ("Role %d steal Role %d money : %f\n", sub_role, obj_role, money)
+      fmt.Printf ("Role %d steal Role %d money : %f\n", sub_role, obj_role, -money)
 }
 func (uv * TestUserView) SelfRecover (rind int) {// 自我恢复
       fmt.Printf ("Role %d finish recovery\n", rind)

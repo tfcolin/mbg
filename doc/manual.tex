@@ -173,7 +173,7 @@ mbg 是一款采用 go 语言开发的攻城模式的回合制桌面游戏, 类�
             \item 城市:
                 \begin{itemize}
                     \item 空城市: 决定是否占领城市, 若占领需至少派驻一名人员. 可选择设置市长和/或财务官.
-                    \item 己方占领城市: 获得额外收益, 同时可选择调换身边的人员和城市驻扎的人员, 可选择变更市长和/或财务官.
+                    \item 己方占领城市: 获得额外收益. 
                     \item 敌方占领城市: 支付税金. 同时可选择是否发动攻城战斗, 以及战斗的规模, 详见 \ref{s_battle} 节的描述.
                         \begin{itemize}
                             \item 如果攻城成功, 则该城市的所有敌方进驻人员撤回到敌方角色身边. 
@@ -181,7 +181,7 @@ mbg 是一款采用 go 语言开发的攻城模式的回合制桌面游戏, 类�
                         \end{itemize}
                 \end{itemize}
             \item 会馆: 随机从三个档次的闲置人员中产生一名人员, 由玩家选择最多一名人员招募至玩家阵营, 并支付招募费.
-                新招募的人员会立刻跟随在玩家身边.
+                新招募的人员会立刻跟随在玩家身边. 关于每个人员所属的档次可参见第 \ref{s_people} 节.
             \item 谋略研究所:
                 \begin{itemize}
                     \item 已有己方人员进驻该研究所: 无操作.
@@ -193,6 +193,8 @@ mbg 是一款采用 go 语言开发的攻城模式的回合制桌面游戏, 类�
                     \item 无己方人员进驻该修炼所: 可选择人员进驻并修炼一项该人员的基本能力.
                 \end{itemize}
             \item 机会: 玩家随机获得一张卡牌, 详见第 \ref{s_card} 节的描述.
+            \item 其他角色所在的格子: 玩家可选择是否发动与其他角色的遭遇战. 
+                如果发动遭遇战, 则战胜的一方可以从战败的一方获得收益.
         \end{itemize}
 \end{itemize}
 
@@ -306,7 +308,7 @@ mbg_gtk yyy.sav
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{f_city.png}
-    \caption{\label{f_city}查看城市信息}
+    \caption{\label{f_city}查看所有城市信息}
 \end{figure}
 \begin{figure}
     \centering
@@ -324,7 +326,7 @@ mbg_gtk yyy.sav
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{f_cross_city.png}
-    \caption{\label{f_cross_city}查看所有修炼所}
+    \caption{\label{f_cross_city}角色经过对手所占领的城市}
 \end{figure}
 当发动战斗时, 首先需要发动方选择一个战斗规模 (右下角), 然后双方分别选择
 将领, 进而进入战斗对话框, 如图 \ref{f_battle} 所示.
@@ -336,13 +338,16 @@ mbg_gtk yyy.sav
 \begin{figure}
     \centering
     \includegraphics[scale=0.4]{f_battle.png}
-    \caption{\label{f_battle}游戏主界面}
+    \caption{\label{f_battle}战斗对话框: 战斗开始时}
 \end{figure}
 \begin{figure}
     \centering
-    \includegraphics[scale=0.4]{f_battle.png}
-    \caption{\label{f_battle_res}游戏主界面}
+    \includegraphics[scale=0.4]{f_battle_res.png}
+    \caption{\label{f_battle_res}战斗对话框: 战斗结束时}
 \end{figure}
+
+在游戏进行中, 如果需要玩家选择各类对象时均会展示对应的选择对话框.
+如果玩家打算放弃该项选择, 直接关闭该对话框即可.
 
 \section{各系统的规则}
 \label{s_driver}
@@ -527,7 +532,7 @@ type Role struct {
         与该城市发生攻城战斗, 无法选择. 任何其他角色只要经过公愤角色所占领的城市, 也必然发动攻城战斗, 无法选择.
         任何角色与公愤角色在路上相遇, 必然发生遭遇战. 在与其他角色的盟约终止前, 角色无法进入公愤状态. 
         但目前此处存在一个规则漏洞, 因为战斗的发动方可以通过不选择出战将领而强制不发动战斗而提前战败.
-        而通常这种战败不会造成任何损失.
+        而攻城时这种战败不会造成任何损失.
 \end{itemize}
 \lcode{atime} 表示角色结盟或公愤状态的剩余持续时间. \lcode{cards} 数组记录了角色所拥有的每一种机会卡片的数量.
 共有 \lcode{CARD_COUNT} 种机会卡片. 
@@ -731,6 +736,23 @@ func (d *Driver) GetTrainInfo(tind int, rind int) (name string, item Property, m
 \end{lstlisting}
 用于获取编号为 \lcode{tind} 的修炼所与角色 \lcode{rind} 相关的信息.
 
+\subsubsection{会馆}
+当角色停留在会馆时, 引擎系统会随机从每个档次的人员中分别选择一人形成一个列表
+传给玩家. 玩家可从中选择一名人员进行雇佣, 从而使其成为该角色的随身人员.
+雇佣需要一次性支付由如下公式计算得到的资金.
+\begin{lstlisting}
+P_PRICE_SCALE * (0.1 * sum + 0.5 * max) * (0.9 + 0.2 * rand.Float32())
+\end{lstlisting}
+其中, \lcode{sum} 为该人员所有 $5$ 项属性值的总和, \lcode{max} 为 $5$ 项属性中的最大值. 
+
+\subsubsection{遭遇战}
+当角色停留在对手角色所在的格子时, 可以选择发动遭遇战. 
+战斗结束后, 战斗的失败方需要向战斗的胜利方支付按如下公式计算得到的资金.
+\begin{lstlisting}
+MEETION_STEAL * lose_r.money
+\end{lstlisting}
+其中, \lcode{lose_r} 表示战斗失败一方的角色.
+
 \subsection{人员系统}
 \label{s_people}
 如下 \lcode{Officer} 结构用于描述每一位可被角色雇佣的人员.
@@ -811,7 +833,7 @@ const (
             \end{itemize}
 \end{itemize}
 
-另外, 另外还有一个特殊人员 \lcode{robber}. 如第 \ref{s_board} 节所述,
+另外, 还有一个特殊人员 \lcode{robber}. 如第 \ref{s_board} 节所述,
 当某位角色遭遇强盗时, 与其战斗的对手的基本属性定义如下.
 \begin{lstlisting}
 var zei Officer = Officer{
@@ -846,7 +868,7 @@ var zei Officer = Officer{
       \item 在某个回合, 发动方和被动方的 HP 同时减为零 (通过技能导致), 此时战斗以平局结束.
       \item 达到由战斗规模决定的最大回合数, 此时战斗以平局结束.
 \end{enumerate}
-对于以平局结束的战斗, 其效果等同于被动方获胜. 战斗的最大回合数的计算公式为
+战斗的最大回合数的计算公式为
 \begin{lstlisting}
 BATTLE_ROUND_MIN + BATTLE_ROUND_STEP * scale
 \end{lstlisting}
@@ -1310,36 +1332,37 @@ UI 的开发者可参考该文件中的注释, 此处不再赘述.
 本游戏所使用到的所有常数可归结为如下定义代码.
 \begin{lstlisting}
 const (
-	TECH_COUNT             = 12   // 战斗技能个数
-	CARD_COUNT             = 14   // 卡片个数
-	TRAIN_ROUND            = 6    // 完成一次训练所需回合数
+    TECH_COUNT             = 12   // 战斗技能个数
+    CARD_COUNT             = 14   // 卡片个数
+    TRAIN_ROUND            = 6    // 完成一次训练所需回合数
     TRAIN_PLUS             = 3    // 完成一次修炼所获得的最大能力提升值
-	STUDY_SCALE            = 1    // 研究所一回合所完成的点数与研究人员策略值的比例
-	P_HP_BASE      float32 = 1000 // 人员最大 HP 的基数
-	P_HP_SCALE     float32 = 20   // 人员最大 HP 减基数后与人员平均属性值的比值
-	P_PRICE_SCALE  float32 = 30   // 雇佣价格与参考属性值 (单一: 0-100) 的比例.
-	P_POISON_PROP_SCALE float32 = 0.75 // 处于中毒状态的人物能力占健康能力的比例
-	DEF_SMALL	   float32 = 500  // 小型城市最大防御
-	DEF_MEDIUM     float32 = 800  // 中型城市最大防御
-	DEF_BIG  	   float32 = 1200 // 大型城市最大防御
-	DEF_PLUS_SCALE float32 = 0.05 // 城市每回合恢复防御占总防御的比例
-	FENGSHUI_ROUND         = 5    // 每多少回合更新一次城市风水
-	MIN_EARN       float32 = 20   // 城市最小收入指数 (当无财务官或财务官的经济属性小于该值时将采用该值)
-	MAX_STEP               = 6    // 角色正常行走时的最大步长
-	FAST_SCALE     float32 = 2    // 角色急性时最大步长与 MAX_STEP 的比值
-	SLOW_SCALE     float32 = 2    // 角色慢行时 MAX_STEP 与最大步长的比值
-	ROBBER_STEAL   float32 = 2000 // 未剿灭山贼时被偷的钱数
-	TAX_SCALE      float32 = 6    // 城市税收 (角色到达被他人占领城市所付的钱) 与城市每回合正常收入的比例
-	OWN_TAX_SCALE  float32 = 3    // 自我城市税收 (角色到达自己所占领城市时收入的钱) 与城市每回合正常收入的比例
-	HPPLUS_SCALE   float32 = 1.5  // 城市每回合恢复 HP 与市长政治属性的比例
-	ALLOCATE_TURN          = 8    // 每多少回合进行一次人员调配
+    STUDY_SCALE            = 1    // 研究所一回合所完成的点数与研究人员策略值的比例
+    P_HP_BASE      float32 = 1000 // 人员最大 HP 的基数
+    P_HP_SCALE     float32 = 20   // 人员最大 HP 减基数后与人员平均属性值的比值
+    P_PRICE_SCALE  float32 = 30   // 雇佣价格与参考属性值 (单一: 0-100) 的比例.
+    P_POISON_PROP_SCALE float32 = 0.75 // 处于中毒状态的人物能力占健康能力的比例
+    DEF_SMALL	   float32 = 500  // 小型城市最大防御
+    DEF_MEDIUM     float32 = 800  // 中型城市最大防御
+    DEF_BIG  	   float32 = 1200 // 大型城市最大防御
+    DEF_PLUS_SCALE float32 = 0.05 // 城市每回合恢复防御占总防御的比例
+    FENGSHUI_ROUND         = 5    // 每多少回合更新一次城市风水
+    MIN_EARN       float32 = 20   // 城市最小收入指数 (当无财务官或财务官的经济属性小于该值时将采用该值)
+    MAX_STEP               = 6    // 角色正常行走时的最大步长
+    FAST_SCALE     float32 = 2    // 角色急行时最大步长与 MAX_STEP 的比值
+    SLOW_SCALE     float32 = 2    // 角色慢行时 MAX_STEP 与最大步长的比值
+    ROBBER_STEAL   float32 = 2000 // 未剿灭山贼时被偷的钱数
+    MEETION_STEAL  float32 = 0.04 // 遭遇战失败方向胜利方支付的资金量占失败方总资产的比例.
+    TAX_SCALE      float32 = 6    // 城市税收 (角色到达被他人占领城市所付的钱) 与城市每回合正常收入的比例
+    OWN_TAX_SCALE  float32 = 3    // 自我城市税收 (角色到达自己所占领城市时收入的钱) 与城市每回合正常收入的比例
+    HPPLUS_SCALE   float32 = 1.5  // 城市每回合恢复 HP 与市长政治属性的比例
+    ALLOCATE_TURN          = 8    // 每多少回合进行一次人员调配
 
-	BATTLE_ROUND_MIN          = 40 // 战斗回合限制基数
-	BATTLE_ROUND_STEP         = 30 // 战斗回合限制增量 (随战斗规模增加)
-	BURN_HURT         float32 = 20 // 战时燃烧伤害
+    BATTLE_ROUND_MIN          = 40 // 战斗回合限制基数
+    BATTLE_ROUND_STEP         = 30 // 战斗回合限制增量 (随战斗规模增加)
+    BURN_HURT         float32 = 20 // 战时燃烧伤害
 
-	CARD_STEAL_MONEY    float32 = 1500 // 通过卡片偷钱的数量
-	CARD_HP_RECOVER_SCALE float32 = 0.1 // 通过卡片恢复 HP 的比例
+    CARD_STEAL_MONEY    float32 = 1500 // 通过卡片偷钱的数量
+    CARD_HP_RECOVER_SCALE float32 = 0.1 // 通过卡片恢复 HP 的比例
 )
 \end{lstlisting}
 各常数的含义已在前文中有所描述.

@@ -16,7 +16,12 @@ type UserView interface {
       SetStop (rind int) // 禁行
       SetContinue (rind int) // 双行
       ChangeDir (rind int) // 设置反向
-      StealMoney (sub_role int, obj_role int, money float32) // 偷钱, money < 0. 在遇到山贼且未取胜时以及使用偷盗的卡片时会被调用.
+      /* 偷钱. 在遇到山贼且未取胜时, 使用偷盗的卡片时, 以及遭遇战之后会被调用.
+      * sub_role: 收钱一方
+      * obj_role: 付钱一方, -1 表示山贼
+      * money (< 0): 付钱数量.
+      */
+      StealMoney (sub_role int, obj_role int, money float32) 
       SelfRecover (rind int) // 自我恢复
       SetLiuYan (pind int) // 设置流言状态. 
       SetPoison (pind int) // 设置中毒状态
@@ -110,7 +115,7 @@ type OperationInterface interface {
       SelRoleAction (clist []int) int 
       GetFileName () string // 返回游戏进度文件名 (返回空串表示取消) ( SelRoleAction = -3 时会紧接着被调用)
 	SaveReport (is_success bool) // 保存文件通知 (is_success: 是否保存成功)
-      OccuCityFail (cind int) // 占领城市失败
+      OccuCityFail (cind int) // 占领城市失败 (未选择驻扎人员)
       // 选择占领的人员. splist 为可选择人员的列表. 返回值为由 splist 的下标所构成的列表, 以表示从 splist 中选择了一个子列表.
       SelCityMos (splist []int, cind int) []int 
       /* 选择市长. 
