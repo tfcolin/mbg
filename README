@@ -1,1 +1,29 @@
-一个类似三国富甲天下的游戏引擎
+一个类似三国富甲天下的游戏引擎和基于 gtk3 的 UI, 使用 go 语言开发.
+
+编译方法:
+
+用户可通过如下 git 指令下载游戏的源代码.
+git clone https://gitee.com/tfcolin/mbg.git
+
+编译方法:
+
+cd mbg/
+go build .
+cd gtk3ui
+go build .
+cd ../mbg_gtk
+go build .
+cd ..
+
+完成编译后, 用户可进入到 mbg_gtk 目录.
+有两种方式可启动游戏. 一是重头开始游戏, 此时可执行 
+mbg_gtk xxx.map
+其中, xxx.map 为事先定义好的游戏规则文件, 目前的软件包内包含 ``sanguo.map'' 作为示例.
+关于 .map 文件内容的详细说明可参考 doc/manual.pdf 中的规则文件一节.
+
+另一种启动游戏的方式是载入之前存储的进度文件, 启动方式为
+mbg_gtk yyy.sav
+其中, yyy.sav 为之前保存的进度文件.
+程序会根据所提供文件名的后缀 (.map 还是 .sav) 来判定以哪种情形启动引擎.
+
+详细游戏规则说明可参见文档 doc/manual.pdf
