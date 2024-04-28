@@ -7,7 +7,8 @@ arch=('x86_64')
 url="https://gitee.com/tfcolin/slide"
 license=('GPL-3.0-or-later')
 depends=('gtk3' 'ncurses')
-source=("https://gitee.com/tfcolin/slide.git")
+source=("$pkgname-$pkgver::https://gitee.com/tfcolin/slide.git")
+sha256sums=('88e931765814df4da5dbc7f1397232540302c1da611cd752fb4ba141aa97f570')
 
 build() {
 	cd "$pkgname-$pkgver"
