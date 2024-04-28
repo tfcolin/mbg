@@ -17,6 +17,9 @@ make
 make sp_cs
 ./sp_cs
 
+h, j, k, l: 移动坐标
+q: 退出.
+
 3) 基于 gtk3 的前端
 make sp_gtk
 ./sp_gtk

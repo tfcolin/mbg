@@ -1,20 +1,24 @@
-PREFIX := /usr/local
+ifndef PREFIX
+	PREFIX := /usr/local
+endif
+
 SOFTNAME := sp
-
 OBJLIB := lib$(SOFTNAME).a
-OPTOPT := -O0
+TESTS := sp_cs sp_gtk
 
-all : $(OBJLIB) 
+ifdef DEBUG
+OPTOPT := -O0 -g
+endif
+
+all : $(OBJLIB) $(TESTS)
 
 CC := gcc
 LINKER := gcc
 
-CFLAGS := -g $(OPTOPT) -I. 
-LFLAGS := -g $(OPTOPT) 
+CFLAGS := $(OPTOPT) -I. 
+LFLAGS := $(OPTOPT) 
 
 MAKE_DEP := gcc -MM
-
-TESTS := sp_cs sp_gtk
 
 SRCS := $(filter-out $(addsuffix .c, $(TESTS)), $(wildcard *.c))
 DEPS := $(patsubst %.c, %.d, $(wildcard *.c))
@@ -48,14 +52,11 @@ clean:
 	rm -rf *.o $(OBJLIB) *.d $(TESTS) 
 
 install:
-	rm -rf $(PREFIX)/lib/$(OBJLIB)
-	rm -rf $(PREFIX)/include/$(SOFTNAME)/
-	cp -i $(OBJLIB) $(PREFIX)/lib/
-	mkdir -p $(PREFIX)/include/$(SOFTNAME)/
-	cp -i *.h $(PREFIX)/include/$(SOFTNAME)/
+	install -Dm644 $(OBJLIB) -t $(PREFIX)/lib/
 
-dist:
-	cd ..; tar cvf $(SOFTNAME)-0.0.8.tar $(SOFTNAME)/
+install_all:
+	install -Dm644 $(OBJLIB) -t $(PREFIX)/lib/
+	install -Dm755 $(TESTS) -t $(PREFIX)/bin/
 
-.PHONY: all clean install 
+.PHONY: all clean install install_all
 
