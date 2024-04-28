@@ -29,8 +29,3 @@ make sp_gtk
 ncurses
 gtk3
 pkg-config
-
-发行版安装:
-
-Archlinux AUR: slidegame
-
