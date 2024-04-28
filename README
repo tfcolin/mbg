@@ -29,3 +29,5 @@ make sp_gtk
 ncurses
 gtk3
 pkg-config
+
+archlinux AUR: slidegame
