@@ -31,5 +31,7 @@ mbg_gtk yyy.sav
 Archlinux 用户可直接从 AUR 安装.
 
 软件包名称: mbg
-mbg_gtk 安装于: /usr/bin/
-文档安装于: /usr/share/doc/
+
+mbg_gtk 可执行程序安装于: /usr/bin/
+文档安装于: /usr/share/doc/mbg/
+示例规则描述文件: /usr/share/mbg/rules/
